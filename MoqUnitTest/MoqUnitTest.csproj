@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageId>MoqUnitTest </PackageId>
+    <Version>3.0.3</Version>
+    <Authors>Husky</Authors>
+    <Company>Shelby co. ltd.</Company>
+    <Product>MoqUnitTest</Product>
+    <Description>Provide all tools for make moq testing in unit test.</Description>
+    <RepositoryUrl>https://github.com/Kein0r666/MoqUnitTest.git</RepositoryUrl>
+    <PackageTags>Moq Unit Test MoqUnitTest xUnit </PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="RestSharp" Version="106.12.0" />
   </ItemGroup>
 
   <ItemGroup>
