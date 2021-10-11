@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoqUnitTest.Moq.UnitTest.Injector
 {
@@ -16,17 +16,18 @@ namespace MoqUnitTest.Moq.UnitTest.Injector
             Configuration = !string.IsNullOrWhiteSpace(jsonAppSettingsPath) ? new ConfigurationBuilder().AddJsonFile(jsonAppSettingsPath).Build() : null;
             Services = new ServiceCollection();
         }
-        public IServiceCollection CreateDbContext<T>(string connection)
+        public virtual IServiceCollection CreateDbContext<T>(string connection)
             where T : Microsoft.EntityFrameworkCore.DbContext
         {
-            if (this.Configuration != null)
-            {
-                var options = new DbContextOptionsBuilder<T>()
+            if (this.Configuration == null)
+                throw new NullReferenceException(nameof(Configuration));
+
+                var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<T>()
                         .UseSqlServer(Configuration.GetConnectionString(connection))
                         .Options;
 
                 return Services.AddSingleton((T)Activator.CreateInstance(typeof(T), new object[] { options }));
-            }
+            
 
             throw new NullReferenceException(nameof(Configuration));
         }
@@ -34,6 +35,14 @@ namespace MoqUnitTest.Moq.UnitTest.Injector
             where T : Microsoft.EntityFrameworkCore.DbContext
         {
             return Services.AddSingleton(context);
+        }
+        public virtual IServiceCollection CreateEF6DbContext<T>(string connection)
+            where T : System.Data.Entity.DbContext
+        {
+            if (this.Configuration == null)
+                throw new NullReferenceException(nameof(Configuration));
+
+                return Services.AddSingleton((T)Activator.CreateInstance(typeof(T), new object[] { connection }));
         }
         public virtual IServiceCollection CreateEF6DbContext<T>(T context)
             where T : System.Data.Entity.DbContext

@@ -3,6 +3,7 @@ using MoqUnitTest.Moq.Models;
 using MoqUnitTest.Moq.Models.Generator;
 using MoqUnitTest.Moq.Models.Interface;
 using MoqUnitTest.Moq.MoqDB.EF6.Extension;
+using MoqUnitTest.Moq.MoqDB.Interface;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

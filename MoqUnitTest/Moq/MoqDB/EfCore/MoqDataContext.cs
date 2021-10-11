@@ -8,6 +8,7 @@ using MoqUnitTest.Moq.Models;
 using MoqUnitTest.Moq.Models.Generator;
 using MoqUnitTest.Moq.Models.Interface;
 using MoqUnitTest.Moq.MoqDB.EfCore.Extension;
+using MoqUnitTest.Moq.MoqDB.Interface;
 using UserServiceTest.MoqDB.MoqModels;
 
 namespace MoqUnitTest.Moq.MoqDB.EfCore
