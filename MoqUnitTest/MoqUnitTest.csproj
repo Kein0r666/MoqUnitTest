@@ -10,6 +10,7 @@
     <Description>Provide all tools for make moq testing in unit test.</Description>
     <RepositoryUrl>https://github.com/Kein0r666/MoqUnitTest.git</RepositoryUrl>
     <PackageTags>Moq Unit Test MoqUnitTest xUnit </PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

@@ -37,17 +37,27 @@ namespace MoqUnitTest.Moq.UnitTest
             Service = Injector.GetService<TService>();
             return Service;
         }
-        public virtual void PrepareDb<TContext>(string connectionName = "", EFCore.MoqDataContext<TContext> moqDataContext = null)
+        public virtual TMoqContext PrepareDb<TMoqContext, TContext>(string connectionName = "", TMoqContext moqDataContext = null)
+            where TMoqContext : EFCore.MoqDataContext<TContext>
             where TContext : Microsoft.EntityFrameworkCore.DbContext
         {
             if (IsRealDb && !string.IsNullOrWhiteSpace(connectionName))
                 Injector.CreateDbContext<TContext>(connectionName);
             else if (moqDataContext != null)
+            {
                 Injector.CreateDbContext(moqDataContext.CreateDb());
+            }
+
+            var moqDb = Injector.GetService<TMoqContext>();
+
+            if (!IsRealDb)
+                moqDb.Seed(moqDb.Context);
 
             IsEFCore = true;
+            return moqDb;
         }
-        public virtual void PrepareDb<TContext>(string connectionName = "", EF6.MoqDataContext<TContext> moqDataContext = null)
+        public virtual TMoqContext PrepareEF6Db<TMoqContext, TContext>(string connectionName = "", TMoqContext moqDataContext = null)
+            where TMoqContext : EF6.MoqDataContext<TContext>
             where TContext : System.Data.Entity.DbContext
         {
             if (IsRealDb && !string.IsNullOrWhiteSpace(connectionName))
@@ -56,8 +66,15 @@ namespace MoqUnitTest.Moq.UnitTest
             {
                 Injector.CreateEF6DbContext(moqDataContext.CreateDb());
             }
-                
+
+            var moqDb = Injector.GetService<TMoqContext>();
+
+            if(!IsRealDb)
+                moqDb.Seed(moqDb.Context);
+
             IsEF6 = true;
+            return moqDb;
+
         }
 
         public abstract void Dispose();
