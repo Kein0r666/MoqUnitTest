@@ -13,30 +13,34 @@ namespace MoqUnitTest.Moq.Models.Extension
 
             if (prop.PropertyType == typeof(string))
                 return "TestData".GenerateId();
-            if (prop.PropertyType == typeof(int))
-                return random.Next(0, 50);
+            if (prop.PropertyType == typeof(Int32))
+                return (Int32)random.Next(0, 50);
+            if (prop.PropertyType == typeof(Int64))
+                return (Int64)random.Next(0, 50);
             if (prop.PropertyType == typeof(long))
-                return random.Next(0, 50);
+                return (long)random.Next(0, 50);
             if (prop.PropertyType == typeof(float))
-                return random.Next(0, 500);
+                return (float)random.Next(0, 500);
             if (prop.PropertyType == typeof(decimal))
-                return random.Next(0, 500);
+                return (Decimal)random.Next(0, 500);
             if (prop.PropertyType == typeof(double))
-                return random.Next(0, 500);
+                return (double)random.Next(0, 500);
             if (prop.PropertyType == typeof(bool))
                 return random.Next(0, 2) == 1 ? true : false;
             if (prop.PropertyType == typeof(Guid))
                 return Guid.NewGuid();
-            if (prop.PropertyType == typeof(int?))
-                return random.Next(0, 50);
+            if (prop.PropertyType == typeof(Int32?))
+                return (Int32?)random.Next(0, 50);
+            if (prop.PropertyType == typeof(Int64?))
+                return (Int64?)random.Next(0, 50);
             if (prop.PropertyType == typeof(long?))
-                return random.Next(0, 50);
+                return (long?)random.Next(0, 50);
             if (prop.PropertyType == typeof(float?))
-                return random.Next(0, 500);
+                return (float?)random.Next(0, 500);
             if (prop.PropertyType == typeof(decimal?))
-                return random.Next(0, 500);
+                return (decimal?)random.Next(0, 500);
             if (prop.PropertyType == typeof(double?))
-                return random.Next(0, 500);
+                return (double?)random.Next(0, 500);
             if (prop.PropertyType == typeof(bool?))
                 return random.Next(0, 2) == 1 ? true : false;
             //if (prop.PropertyType == typeof(Guid?))

@@ -25,7 +25,7 @@ namespace MoqUnitTest.Moq.Models
 
             while (enumerator.MoveNext())
             {
-                if (enumerator.Current.Key.Equals(obj))
+                if (enumerator.Current.Key == obj)
                     return enumerator.Current.Value;
             }
 

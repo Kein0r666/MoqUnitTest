@@ -39,7 +39,7 @@ namespace MoqUnitTest.Moq.Models
         /// <param name="moqGenerator">Модель для генерации мок объекта</param>
         /// <param name="count">Количестов экзмеляров</param>
         /// <returns>Список созданных мок объектов</returns>
-        public IEnumerable<IMoqModel<TModel>> CreateListItems<TModel>(IMoqGenerator<TModel> moqGenerator, int count = 1)
+        public List<IMoqModel<TModel>> CreateListItems<TModel>(IMoqGenerator<TModel> moqGenerator, int count = 1)
             where TModel : class
         {
             var generators = new IMoqGenerator<TModel>[count];
@@ -59,7 +59,7 @@ namespace MoqUnitTest.Moq.Models
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="items">Список моделей генераторов мок объектов</param>
         /// <returns>Список сгенерированных мок объектов</returns>
-        public IEnumerable<IMoqModel<TModel>> CreateListItems<TModel>(IMoqGenerator<TModel>[] items)
+        public List<IMoqModel<TModel>> CreateListItems<TModel>(IMoqGenerator<TModel>[] items)
             where TModel : class
         {
             var moqModels = CreateListGeneratedMoq(items);
@@ -109,7 +109,7 @@ namespace MoqUnitTest.Moq.Models
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModels">Список мок моеделей</param>
         /// <returns>Список запакованных элементов</returns>
-        private static IEnumerable<object> Pack<TModel>(IEnumerable<IMoqModel<TModel>> moqModels)
+        public IEnumerable<object> Pack<TModel>(IEnumerable<IMoqModel<TModel>> moqModels)
             where TModel : class
         {
             foreach (var item in moqModels)
@@ -121,7 +121,7 @@ namespace MoqUnitTest.Moq.Models
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModels">Список мок моеделей</param>
         /// <returns>Список запакованных элементов</returns>
-        private static List<object> Pack<TModel>(IMoqModel<TModel> moqModel)
+        public List<object> Pack<TModel>(IMoqModel<TModel> moqModel)
             where TModel : class
         {
             return new List<object>

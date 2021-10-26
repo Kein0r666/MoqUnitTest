@@ -22,12 +22,12 @@ namespace MoqUnitTest.Moq.UnitTest.Injector
             if (this.Configuration == null)
                 throw new NullReferenceException(nameof(Configuration));
 
-                var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<T>()
-                        .UseSqlServer(Configuration.GetConnectionString(connection))
-                        .Options;
+            var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<T>()
+                    .UseSqlServer(Configuration.GetConnectionString(connection))
+                    .Options;
 
-                return Services.AddSingleton((T)Activator.CreateInstance(typeof(T), new object[] { options }));
-            
+            return Services.AddSingleton((T)Activator.CreateInstance(typeof(T), new object[] { options }));
+
 
             throw new NullReferenceException(nameof(Configuration));
         }
@@ -42,12 +42,12 @@ namespace MoqUnitTest.Moq.UnitTest.Injector
             if (this.Configuration == null)
                 throw new NullReferenceException(nameof(Configuration));
 
-                return Services.AddSingleton((T)Activator.CreateInstance(typeof(T), new object[] { connection }));
+            return Services.AddTransient(x => (T)Activator.CreateInstance(typeof(T), new object[] { connection }));
         }
         public virtual IServiceCollection CreateEF6DbContext<T>(T context)
             where T : System.Data.Entity.DbContext
         {
-            return Services.AddSingleton(context);
+            return Services.AddTransient(x => context);
         }
         public virtual IServiceCollection CreateDbContext<TService, TImplementation>(Func<TService, TImplementation> func)
             where TService : class

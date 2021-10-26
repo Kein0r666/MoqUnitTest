@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <PackageId>MoqUnitTest </PackageId>
-    <Version>3.0.3</Version>
+    <Version>3.0.4</Version>
     <Authors>Husky</Authors>
     <Company>Shelby co. ltd.</Company>
     <Product>MoqUnitTest</Product>

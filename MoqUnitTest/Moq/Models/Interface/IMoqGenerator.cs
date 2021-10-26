@@ -11,5 +11,6 @@ namespace MoqUnitTest.Moq.Models.Interface
         where T : class
     {
         public IMoqModel<T> Generate();
+        public T Generate(T model);
     }
 }

@@ -6,6 +6,7 @@ using MoqUnitTest.Moq.MoqDB.EF6.Extension;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UserServiceTest.MoqDB.MoqModels;
@@ -14,7 +15,7 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
 {
     //TODO Восстановить прошлую версию DataContexta для работы с мок объектами
     public abstract class MoqDataContext<TContext> : IDisposable
-        where TContext : DbContext
+        where TContext : System.Data.Entity.DbContext
     {
         public bool IsDisposed { get; private set; }
 
@@ -36,9 +37,7 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
         public static TContext CreateDataBase()
         {
             var connection = Effort.DbConnectionFactory.CreateTransient();
-
             var DataContext = (TContext)Activator.CreateInstance(typeof(TContext), new object[] { connection });
-
             return DataContext;
         }
         /// <summary>
@@ -48,9 +47,7 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
         public TContext CreateDb()
         {
             var connection = Effort.DbConnectionFactory.CreateTransient();
-
             Context = (TContext)Activator.CreateInstance(typeof(TContext), connection);
-
             return Context;
         }
         /// <summary>
@@ -61,9 +58,7 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
         public TContext CreateDb(string connectionName)
         {
             var connection = Configuration.GetConnectionString(connectionName);
-
             Context = (TContext)Activator.CreateInstance(typeof(TContext), connection);
-
             return Context;
         }
         /// <summary>
@@ -83,7 +78,21 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
 
             using var db = CreateDb(connectionName);
         }
+        /// <summary>
+        /// Заполнение базы данными 
+        /// </summary>
+        /// <param name="context"></param>
         public virtual void Seed(TContext context)
+        {
+            if (Context == null)
+                Context = context;
+        }
+        /// <summary>
+        /// Заполнение базы асинхронно
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public virtual async Task SeedAsync(TContext context)
         {
             if (Context == null)
                 Context = context;
@@ -97,10 +106,7 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
             where TModel : class
         {
             var item = MoqData.CreateItem(moqModel);
-
-            Context.Entry(item.Create());
-            Context.SaveChanges();
-
+            Context.Append(item);
             return item;
         }
         /// <summary>
@@ -108,29 +114,23 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
         /// </summary>
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModel">Мок генератор</param>
-        public virtual async Task CreateAsync<TModel>(IMoqGenerator<TModel> moqModel)
+        public virtual async Task<IMoqModel<TModel>> CreateAsync<TModel>(IMoqGenerator<TModel> moqModel)
             where TModel : class
         {
             var item = MoqData.CreateItem(moqModel);
-
-            Context.Entry(item.Create()).State = EntityState.Added;
-            await Context.SaveChangesAsync();
-
             await Context.AppendAsync(item);
+            return item;
         }
         /// <summary>
         /// Создаёт список мок экземпляров, и заполняет их в список MoqData. Создаёт записи в базе данных 
         /// </summary>
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModel">Мок генератор</param>
-        public virtual IEnumerable<IMoqModel<TModel>> CreateItems<TModel>(IMoqGenerator<TModel> moqModel, int count)
+        public virtual List<IMoqModel<TModel>> CreateItems<TModel>(IMoqGenerator<TModel> moqModel, int count)
             where TModel : class
         {
             var items = MoqData.CreateListItems(moqModel, count);
-
-            //foreach (var item in items)
-            //    Context.Entry(item.Create()).State = EntityState.Added;
-
+            
             Context.AppendRange(items);
 
             return items;
@@ -140,35 +140,85 @@ namespace MoqUnitTest.Moq.MoqDB.EF6
         /// </summary>
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModel">Мок генератор</param>
-        public virtual async Task CreateItemsAsync<TModel>(IMoqGenerator<TModel> moqModel, int count)
+        public virtual async Task<List<IMoqModel<TModel>>> CreateItemsAsync<TModel>(IMoqGenerator<TModel> moqModel, int count)
            where TModel : class
         {
             var item = MoqData.CreateListItems(moqModel, count);
             await Context.AppendRangeAsync(item);
+            return item;
         }
         /// <summary>
-        /// Создаёт список мок экземпляров, и заполняет их в список MoqData. Создаёт записи в базе данных 
+        /// Создаёт список мок экземпляров и заполняет их в список MoqData. Создаёт записи в базе данных 
         /// </summary>
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModel">Мок генератор</param>
-        public virtual IEnumerable<IMoqModel<TModel>> CreateList<TModel>(IMoqGenerator<TModel>[] moqModel)
+        public virtual List<IMoqModel<TModel>> CreateList<TModel>(IMoqGenerator<TModel>[] moqModel)
             where TModel : class
         {
             var items = MoqData.CreateListItems(moqModel);
             Context.AppendRange(items);
-
             return items;
         }
+        /// <summary>
+        /// Создаёт мок объект и заполняет их в список MoqData. Обновляет записи в базе данных
+        /// </summary>
+        /// <typeparam name="TModel">Модель базы данных</typeparam>
+        /// <param name="moqModel">Мок генератор</param>
+        public virtual IMoqModel<TModel> Update<TModel>(IMoqGenerator<TModel> moqModel)
+            where TModel : class
+        {
+            var item = MoqData.CreateItem(moqModel);
+            Context.Update(item);
+            return item;
+        }
+        /// <summary>
+        /// Создаёт мок объект и заполняет их в список MoqData. Обновляет записи в базе данных асинхронно
+        /// </summary>
+        /// <typeparam name="TModel">Модель базы данных</typeparam>
+        /// <param name="moqModel">Мок генератор</param>
+        public virtual List<IMoqModel<TModel>> UpdateRange<TModel>(IMoqGenerator<TModel>[] moqModels)
+            where TModel : class
+        {
+            var items = MoqData.CreateListItems(moqModels);
+            Context.UpdateRange(items);
+            return items;
+        }
+        /// <summary>
+        /// Создаёт список мок экземпляров и заполняет их в список MoqData. Обновляет записи в базе данных 
+        /// </summary>
+        /// <typeparam name="TModel">Модель базы данных</typeparam>
+        /// <param name="moqModel">Мок генератор</param>
+        public virtual async Task<IMoqModel<TModel>> UpdateAsync<TModel>(IMoqGenerator<TModel> moqModel)
+            where TModel : class
+        {
+            var item = MoqData.CreateItem(moqModel);
+            await Context.UpdateAsync(item);
+            return item;
+        }
+        /// <summary>
+        /// Создаёт список мок экземпляров и заполняет их в список MoqData. Обновляет записи в базе данных асинхронно
+        /// </summary>
+        /// <typeparam name="TModel">Модель базы данных</typeparam>
+        /// <param name="moqModel">Мок генератор</param>
+        public virtual async Task<List<IMoqModel<TModel>>> UpdateRangeAsync<TModel>(IMoqGenerator<TModel>[] moqModels)
+            where TModel : class
+        {
+            var items = MoqData.CreateListItems(moqModels);
+            await Context.UpdateRangeAsync(items);
+            return items;
+        }
+
         /// <summary>
         /// Создаёт список мок экземпляров, и заполняет их в список MoqData. Создаёт записи в базе данных ассинхронно 
         /// </summary>
         /// <typeparam name="TModel">Модель базы данных</typeparam>
         /// <param name="moqModel">Мок генератор</param>
-        public virtual async Task CreateListAsync<TModel>(MoqGenerator<TModel>[] moqModel)
+        public virtual async Task<List<IMoqModel<TModel>>> CreateListAsync<TModel>(MoqGenerator<TModel>[] moqModel)
             where TModel : class
         {
             var item = MoqData.CreateListItems(moqModel);
             await Context.AppendRangeAsync(item);
+            return item;
         }
 
         public void Dispose()

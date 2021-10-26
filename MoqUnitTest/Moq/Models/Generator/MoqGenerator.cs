@@ -4,6 +4,8 @@ using MoqUnitTest.Moq.Models.Interface;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq.Expressions;
+using MoqUnitTest.Moq.Recovery;
+using MoqUnitTest.Moq.Recovery.Extension;
 using UserServiceTest.MoqDB.MoqModels;
 
 namespace MoqUnitTest.Moq.Models.Generator
@@ -26,8 +28,12 @@ namespace MoqUnitTest.Moq.Models.Generator
 
             return (IMoqModel<T>)this;
         }
-
-        public T Generate(T model)
+        /// <summary>
+        /// Генерация отдельной модели
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public virtual T Generate(T model)
         {
             var props = model.GetType().GetProperties();
 
