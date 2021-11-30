@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using MoqUnitTest.Moq.Models.Generator;
+using MoqUnitTest.Moq.Models.Interface;
 using UserServiceTest.MoqDB.MoqModels;
 
 namespace MoqUnitTest.Moq.Recovery.Extension.MoqDbEF6
@@ -113,5 +114,6 @@ namespace MoqUnitTest.Moq.Recovery.Extension.MoqDbEF6
                 yield return item;
             }
         }
+        
     }
 }

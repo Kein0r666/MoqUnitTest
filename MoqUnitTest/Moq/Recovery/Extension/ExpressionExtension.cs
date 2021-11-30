@@ -8,7 +8,7 @@ using MoqUnitTest.Moq.Recovery.Attirbute;
 
 namespace MoqUnitTest.Moq.Recovery.Extension
 {
-    public class ExpressionExtension
+    public static class ExpressionExtension
     {
         private static Expression<Func<TSource, TResult>> PullByLimit<TSource, TResult>(PropertyInfo[] targetProps)
         {
@@ -41,31 +41,12 @@ namespace MoqUnitTest.Moq.Recovery.Extension
         public static Expression<Func<TSource, TResult>> PullByLimit<TSource, TResult>()
             => PullByLimit<TSource, TResult>(typeof(TResult).GetProperties());
 
-        //public static Expression<Func<TSource, TSource>> EjectThisBy<TSource, TResult>()
+        //public static void Update<T>(this T model, Action<T> action)
+        //    where T : IRecoveryMoqModel<TModel>
+        //    where TModel : class
         //{
-        //    var sourceProps = typeof(TSource).GetProperties();
-        //    var targetProps = typeof(TResult).GetProperties();
-
-        //    var sourceParam = Expression.Parameter(typeof(TSource), "source");
-        //    var newInstance = Expression.New(typeof(TSource));
-        //    var binds = new List<MemberAssignment>();
-
-        //    foreach (var sourceProp in sourceProps)
-        //    {
-        //        foreach (var targetProp in targetProps)
-        //        {
-        //            if (sourceProp.Name == targetProp.Name)
-        //            {
-        //                var bindProp = Expression.Property(sourceParam, sourceProp.Name);
-        //                binds.Add(Expression.Bind(typeof(TSource).GetProperty(targetProp.Name), bindProp));
-        //            }
-        //        }
-        //    }
-
-        //    var body = Expression.MemberInit(newInstance, binds);
-        //    var lambda = Expression.Lambda<Func<TSource, TSource>>(body, sourceParam);
-        //    return lambda;
+        //    model.IsUpdated = true;
+        //    action(model);
         //}
-
     }
 }

@@ -15,6 +15,12 @@ namespace MoqUnitTest.Moq.Models.Extension
         {
             return func.Invoke(model);
         }
+        /// <summary>
+        /// Заполняет внутренюю модель
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="outerModel"></param>
+        /// <returns></returns>
         public static TModel FillInnerModel<TModel>(this IMoqModel<TModel> outerModel)
             where TModel : class
         {
@@ -33,6 +39,13 @@ namespace MoqUnitTest.Moq.Models.Extension
             }
             return innerModel;
         }
+        /// <summary>
+        /// Заполняет внешнюю модель
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="innerModel"></param>
+        /// <param name="outerModel"></param>
+        /// <returns></returns>
         public static IMoqModel<TModel> FillOuterModel<TModel>(this TModel innerModel, IMoqModel<TModel> outerModel = null)
             where TModel : class
         {

@@ -46,7 +46,7 @@ namespace Evoshare.MoqTesting.Extension
 
             } while (enumerator.MoveNext());
 
-            throw new Exception("No recovery function found");
+            throw new Exception("No recovery function found" + nameof(enumerator.Current.Name));
         }
         public void Invoke(string name)
         {

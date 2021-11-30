@@ -36,20 +36,21 @@ namespace MoqUnitTest.Moq.Models.Generator
         /// <returns></returns>
         public override IMoqModel<T> Generate()
             => Recovery(RecoveryModel);
+
         /// <summary>
-        /// Восстановление модели
+        /// Recovery model
         /// </summary>
-        /// <param name="recoveryBuyer"></param>
+        /// <param name="recoveryModel"></param>
         /// <returns></returns>
-        public virtual IMoqModel<T> Recovery(RecoveryModel<T> recoveryBuyer)
+        public virtual IMoqModel<T> Recovery(RecoveryModel<T> recoveryModel)
         {
             if (IsRecovered)
                 return (IMoqModel<T>)this;
 
-            if (!recoveryBuyer?.Recursive ?? true)
+            if (!recoveryModel?.Recursive ?? false)
                 return (IMoqModel<T>)this;
 
-            var buyerProfile = recoveryBuyer.Model;
+            var buyerProfile = recoveryModel?.Model;
             if (buyerProfile == null)
             {
                 return Recreate();
@@ -59,12 +60,19 @@ namespace MoqUnitTest.Moq.Models.Generator
                 return buyerProfile.FillOuterModel((IMoqModel<T>)this);
             }
         }
+
+
         /// <summary>
-        /// Пересоздание модели
+        /// Recreate current model
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotSupportedException"></exception>
         public abstract IMoqModel<T> Recreate();
+        /// <summary>
+        /// Create new model
+        /// </summary>
+        /// <returns></returns>
+        public abstract T Create();
 
         [NonGenerable]
         [NonPull]
@@ -76,9 +84,5 @@ namespace MoqUnitTest.Moq.Models.Generator
         [NonPull]
         public bool IsUpdated { get; set; }
 
-        public virtual T Create()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

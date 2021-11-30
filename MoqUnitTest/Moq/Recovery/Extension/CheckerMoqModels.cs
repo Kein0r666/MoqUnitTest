@@ -11,11 +11,12 @@ namespace MoqUnitTest.Moq.Recovery.Extension
             return model?.Model != null;
         }
 
-        public static RecoveryGenerator<TModel> IfIsNotRecovered<TModel>(this RecoveryGenerator<TModel> recoveredGenerator, params object?[] recoveryParams)
+        public static TGenerator IfIsNotRecovered<TGenerator, TModel>(this TGenerator recoveredGenerator, params object?[] recoveryParams)
+            where TGenerator : RecoveryGenerator<TModel>
             where TModel : class
         {
             if (recoveredGenerator == null)
-                return (RecoveryGenerator<TModel>)Activator.CreateInstance(recoveredGenerator.GetType(), recoveryParams);
+                return (TGenerator)Activator.CreateInstance(typeof(TGenerator), recoveryParams);
 
             recoveredGenerator.IsRecovered = true;
             return recoveredGenerator;

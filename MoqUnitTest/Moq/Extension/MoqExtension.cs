@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace UserServiceTest.MoqDB
 {
@@ -39,17 +40,5 @@ namespace UserServiceTest.MoqDB
                 .FirstOrDefault()
                 .Word;
         }
-
-        public static string GetPathImage(this string imageName)
-        {
-            return Path.Combine(Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.FullName, "TestImage", imageName);
-        }
-
-        public static string GetImageData(this ImageName image)
-        {
-            using(var reader = new StreamReader((image.ToString("G") + ".txt").GetPathImage(), Encoding.Default))
-                return reader.ReadToEnd();
-        }
-
     }
 }
